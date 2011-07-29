@@ -5,6 +5,45 @@ adding up a single line in views and in controllers/models.
 SimpleCaptcha is available to be used with Rails 3 or above and also it provides the
 backward compatibility with previous versions of Rails.
 
+==ATTENTIONS！
+
+Do not use sqlite3!!!
+
+===simple_captcha_data
+
+* sqlite> select * from simple_captcha_data t where t.key like '7ee6703a6a3c78a73675b3faca9d0fe926216ca4';
+* 1|7ee6703a6a3c78a73675b3faca9d0fe926216ca4|WPEMT|2011-07-29 12:15:04.125132|2011-07-29 12:15:04.125132
+* 2|7ee6703a6a3c78a73675b3faca9d0fe926216ca4|XJKMY|2011-07-29 12:16:27.633955|2011-07-29 12:16:27.633955
+* 3|7ee6703a6a3c78a73675b3faca9d0fe926216ca4|GORKP|2011-07-29 12:21:14.729509|2011-07-29 12:21:14.729509
+* 4|7ee6703a6a3c78a73675b3faca9d0fe926216ca4|XPVHD|2011-07-29 12:22:30.847370|2011-07-29 12:22:30.847370
+* 5|7ee6703a6a3c78a73675b3faca9d0fe926216ca4|MLFEB|2011-07-29 12:22:31.250009|2011-07-29 12:22:31.250009
+
+but
+
+* sqlite> select * from simple_captcha_data t where t.key = '7ee6703a6a3c78a73675b3faca9d0fe926216ca4';
+
+This query return null!
+
+so:
+
+    def self.simple_captcha_value(key) #:nodoc
+      SimpleCaptchaData.get_data(key).value rescue nil
+    end
+
+return nil.
+
+so:
+
+      def get_data(key)
+        #data = find_by_key(key) || new(:key => key)
+        data = where("key LIKE '#{key}'").first || new(:key => key)
+      end
+
+so:
+
+Sqlite3 Support!!!
+
+
 ==Features
 
 * Zero FileSystem usage(secret code moved to db-store and image storage removed).
@@ -18,7 +57,7 @@ backward compatibility with previous versions of Rails.
 ==Requirements
 
 * {Ruby}[http://ruby-lang.org/] >= 1.8.7
-* {Rails}[http://github.com/rails/rails] >= 3
+* {Rails}[http://github.com/rails/rails] >= 3.1
 * ImageMagick should be installed on your machine to use this plugin.
   visit http://www.imagemagick.org/script/index.php for more details.
 
