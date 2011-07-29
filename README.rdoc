@@ -32,6 +32,18 @@ so:
 
 return nil.
 
+so:
+
+      def get_data(key)
+        #data = find_by_key(key) || new(:key => key)
+        data = where("key LIKE '#{key}'").first || new(:key => key)
+      end
+
+so:
+
+Sqlite3 Support!!!
+
+
 ==Features
 
 * Zero FileSystem usage(secret code moved to db-store and image storage removed).
