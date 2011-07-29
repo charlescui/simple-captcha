@@ -6,7 +6,7 @@ module SimpleCaptcha
     
     class << self
       def get_data(key)
-        data = find_by_key(key) || new(:key => key)
+        data = where("key LIKE '#{key}'").first || new(:key => key)
       end
       
       def remove_data(key)
